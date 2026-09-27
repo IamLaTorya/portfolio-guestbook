@@ -1,0 +1,98 @@
+/*Global Reset                                   */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Global viewport & background styling */
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.5;
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  /*Prevent horizontal scroll*/
+}
+
+/* Media elements */
+img,
+picture,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  object-fit: cover;
+}
+section {
+  padding: 2rem 0;
+}
+
+/* Theme wrappers - full screen background */
+.dark,
+.light {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  /*required to center .app-wrapper*/
+  justify-content: center;
+  /*centers horizontally*/
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  --shadow:
+    rgba(0, 0, 0, 0.08) 0 10px 15px -3px,
+    rgba(0, 0, 0, 0.04) 0 4px 6px -2px;
+}
+
+/* Light Mode Theme */
+
+:root {
+  --bg: #FAF6F2;
+  /* warm linen */
+  --text: #3A332E;
+  /* cocoa taupe */
+  --text-h: #1E1916;
+  /* deep espresso */
+  --border: #E8DED7;
+  /* warm sand */
+  --code-bg: #FDFBFA;
+  /* warm cream */
+  --accent: #E7BFAF;
+  /* muted rose-beige */
+  --accent-bg: rgba(231, 191, 175, 0.22);
+  --accent-border: rgba(231, 191, 175, 0.45);
+
+  --shadow:
+    rgba(0, 0, 0, 0.08) 0 10px 15px -3px,
+    rgba(0, 0, 0, 0.04) 0 4px 6px -2px;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  color-scheme: light dark;
+}
+
+/* Dark Mode Theme                                 */
+.dark {
+  --bg: #1C1815;
+  /* warm cocoa-charcoal */
+  --text: #F2EAE4;
+  /* creamy warm linen */
+  --text-h: #FFFFFF;
+  /* pure white */
+  --border: #332E2A;
+  /* warm brown-charcoal */
+  --code-bg: #26221F;
+  /* warm shadow */
+  --accent: #D9B8A8;
+  /* muted almond-rose */
+  --accent-bg: rgba(217, 184, 168, 0.22);
+  --accent-border: rgba(217, 184, 168, 0.5);
+  --social-bg: rgba(28, 24, 21, 0.5);
+}
