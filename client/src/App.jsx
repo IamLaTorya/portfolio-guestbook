@@ -11,6 +11,7 @@ import Experience from './pages/Experience'
 import Projects from './pages/Projects'
 import ProjectDetails from './pages/ProjectDetails'
 import Contact from './pages/Contact'
+import Guestbook from './pages/Guestbook'
 // import css
 import './App.css'
 
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="/projects/:id" element={<ProjectDetails />} />
             <Route path="/experience" element={<Experience />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/guestbook" element={<Guestbook />} />
           </Routes>
           <Footer />
         </div>

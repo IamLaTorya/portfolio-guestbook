@@ -526,11 +526,21 @@ footer {
 @media (max-width: 768px) {
   .navigation{
     justify-content:center;
+    padding-left: 1rem; /* adds left padding to navigation on mobile */
+    padding-right: 1rem; /* adds right padding to navigation on mobile */
   }
 
   .nav-links{
     justify-content:center;
-    width:100%;
+    width:auto;
+    max-width: 100%;
+    flex-wrap: nowrap; /* prevents wrapping on mobile */
+    gap: .75rem; /* lowers spacing between nav links on mobile */
+  }
+
+  .nav-links a {
+    font-size: 0.79rem; /* slightly smaller text for mobile */
+    font-weight: bold; /* makes the text slightly bolder on mobile */
   }
 
   .theme-toggle{
