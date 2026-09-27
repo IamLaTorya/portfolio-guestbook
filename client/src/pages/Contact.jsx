@@ -67,7 +67,10 @@ export default function Contact() {
                 <p>
                     Let's build something meaningful together.
                 </p>
-
+                {/* Highlighted Inactivity Notice */}
+                <p className="form-inactive-notice">
+                    Note: This contact form is currently inactive. To leave a message, please use the live Guestbook page!
+                </p>
             </section>
 
             <form

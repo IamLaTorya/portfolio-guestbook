@@ -483,6 +483,11 @@ form {
   gap: 1rem;
   width: 100%;
 }
+.form-inactive-notice {
+  color: #d9534f;
+  font-weight: bold;
+  margin-top: 1rem;
+}
 
 input,
 textarea {
