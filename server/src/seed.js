@@ -1,10 +1,10 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 // Import required models
-import User from '../models/User';
-import Guestbook from '../models/Guestbook';
-import Counter from '../models/Counter';
+import User from './models/User.js';
+import Guestbook from './models/Guestbook.js';
+import Counter from './models/Counter.js';
 
 //Create a sample guestbook entry
 const sampleEntry = {
