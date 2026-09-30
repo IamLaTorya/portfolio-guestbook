@@ -1,10 +1,12 @@
 // 1. Load environment variables from your .env file
-import 'dotenv/config';
-import express from 'express';
+require('dotenv').config();
+const express = require('express');
 // 8. Import Mongoose for MongoDB connection
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 // 2. Import Express framework
 const app = express();
+// 11. Import the authentication routes
+const authRoutes = require('./routes/auth');
 // 3. Define your port (defaulting to 5000 if not specified in .env)
 const PORT = process.env.PORT || 5000;
 // 9. Connect to MongoDB using Mongoose
@@ -19,7 +21,8 @@ try {
 }
 // 4. Built-in Middleware to parse JSON incoming payloads
 app.use(express.json());
-
+// 12. Use the authentication routes
+app.use('/api/auth', authRoutes);
 // 5. Create a basic test route
 app.get('/', (req, res) => {
     res.send('The Portfolio Guestbook server is running!');
