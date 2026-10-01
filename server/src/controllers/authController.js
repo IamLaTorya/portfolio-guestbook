@@ -2,6 +2,8 @@
 import User from '../models/User.js';
 // import bcrypt for password hashing
 import bcrypt from 'bcrypt';
+// import jwt for token generation
+import jwt from 'jsonwebtoken';
 
 // Controller for handling user registration
 export const register = async (req, res) => {
@@ -61,10 +63,17 @@ export const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ error: 'Invalid username or password.' });
         }
+        // Generate a JWT token for the logged-in user
+        const token = jwt.sign(
+            { id: user.id || user._id, role: user.role, tokenVersion: user.tokenVersion },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' } // Token expires in 1 hour
+        );
 
         // Prepare the response object to exclude sensitive information like the password
         return res.status(200).json({
             message: 'User logged in successfully',
+            token: token,
             user: {
                 id: user.id || user._id,
                 username: user.username,
