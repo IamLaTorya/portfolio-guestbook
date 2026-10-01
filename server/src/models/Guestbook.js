@@ -14,21 +14,23 @@ const guestbookSchema = new mongoose.Schema({
     //likes counter, starting at 0
     likes: { type: Number, min: 0, default: 0 },
     //array of user IDs who have liked the entry, select false ensures it is never sent to the client
-    likedby: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', select: false, default: [] },
+    likedBy: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', select: false, default: [] },
 },
     //timestamp for when the entry was created
     { timestamps: true, versionKey: false }
 );
 // Custom JSON and object transformation for the guestbook schema. It automatically converts _id to id, removes __v and likedby fields for security reasons.
-guestbookSchema.set('toJSON', 'toObject', { 
+guestbookSchema.set('toJSON', { 
     virtuals: true,
     versionKey: false,
     transform: (doc, ret) => {
-        delete ret._id;
-        delete ret.__v;
-        delete ret.likedby; // Security: remove sensitive data before sending to client
+        ret.id = ret._id;    // Convert _id to id for client-side usage
+        delete ret._id;      // Remove the original _id field
+        delete ret.__v;      // Remove the version key
+        delete ret.likedBy;  // Security: remove sensitive data from responses
         return ret;
     }
 });
+guestbookSchema.set('toObject', { virtuals: true});
 
 export default mongoose.model('Guestbook', guestbookSchema);

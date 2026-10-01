@@ -18,3 +18,30 @@ export const getApprovedEntries = async (req, res) => {
         return res.status(500).json({ error: 'Failed to retrieve guestbook entries.' });
     }
 };
+
+// POST /api/guestbook (create a new entry)
+export const createEntry = async (req, res) => {
+    try {
+        const { _id, displayName, message } = req.body;
+
+        // Create the entry using fields explicitly defined (ignoring fake req.body.approved hacks)
+        const newEntry = new Guestbook({
+            _id: _id,                    // Populated safely by your generateGuestbookId middleware
+            author: req.user.id,         // Populated securely by your requireAuth middleware
+            displayName: displayName,
+            message: message
+            // approved, likes, and likedBy fall back to schema defaults automatically
+        });
+
+        const savedEntry = await newEntry.save();
+        return res.status(201).json(savedEntry);
+
+    } catch (err) {
+        // Return 409 for duplicate keys (Mongoose error code 11000)
+        if (err.code === 11000) {
+            return res.status(409).json({ error: 'Conflict: Duplicate ID generated.' });
+        }
+        // Return 400 for structural schema validation failures
+        return res.status(400).json({ error: err.message });
+    }
+};
