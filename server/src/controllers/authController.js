@@ -41,3 +41,38 @@ export const register = async (req, res) => {
         return res.status(400).json({ error: err.message });
     }
 };
+
+// Controller for handling user login
+export const login = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Validation check
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password are required.' });
+        }
+        // Find the user by username in the database
+        const user = await User.findOne({ username: username.toLowerCase().trim() })
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid username or password.' });
+        }
+        // Compare the provided password with the stored hashed password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid username or password.' });
+        }
+
+        // Prepare the response object to exclude sensitive information like the password
+        return res.status(200).json({
+            message: 'User logged in successfully',
+            user: {
+                id: user.id || user._id,
+                username: user.username,
+                role: user.role
+            }
+        });
+
+    } catch (err) {
+        return res.status(400).json({ error: err.message });
+    }
+};
