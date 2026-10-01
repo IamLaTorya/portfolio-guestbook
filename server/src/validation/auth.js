@@ -1,5 +1,5 @@
 // validation/auth.js
-const validateRegisterInput = (req, res, next) => {
+export const validateRegisterInput = (req, res, next) => {
     // Validate the registration input
     const { username, password } = req.body;
     // Validate username and password input
@@ -15,5 +15,3 @@ const validateRegisterInput = (req, res, next) => {
     // If both username and password are valid, proceed to the next middleware
     next();
 };
-// Export the validation function for use in other modules
-module.exports = { validateRegisterInput };

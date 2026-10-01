@@ -1,19 +1,21 @@
 // 1. Load environment variables from your .env file
-require('dotenv').config();
-const express = require('express');
-// 8. Import Mongoose for MongoDB connection
-const mongoose = require('mongoose');
+import 'dotenv/config';
 // 2. Import Express framework
-const app = express();
+import express from 'express';
+// 8. Import Mongoose for MongoDB connection
+import mongoose from 'mongoose';
 // 11. Import the authentication routes
-const authRoutes = require('./routes/auth');
+import authRoutes from './routes/auth.js';
+// 2a. Initialize Express application
+const app = express();
+
 // 3. Define your port (defaulting to 5000 if not specified in .env)
 const PORT = process.env.PORT || 5000;
 // 9. Connect to MongoDB using Mongoose
-const MONGO_URI = process.env.MONGO_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 // 10. Attempt to connect to MongoDB and handle errors, this runs before the server starts listening
 try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(MONGODB_URI);
     console.log('✅ MongoDB connection established successfully!');
 } catch (err) {
     console.error('❌ MongoDB connection failed:', err.message);

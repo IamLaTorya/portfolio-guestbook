@@ -1,7 +1,7 @@
 // controllers/authController.js
-const User = require('../models/User');
+import User from '../models/User.js';
 // Controller for handling user registration
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
     try {
         // Extract username and password from the request body
         const { username, password } = req.body;

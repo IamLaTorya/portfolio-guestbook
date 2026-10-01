@@ -1,11 +1,11 @@
 // routes/auth.js
 // Define the authentication routes for the API
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const authController = require('../controllers/authController');
-const { validateRegisterInput } = require('../validation/auth');
+import { register } from '../controllers/authController.js';
+import { validateRegisterInput } from '../validation/auth.js';
 
 // POST /api/auth/register
-router.post('/register', validateRegisterInput, authController.register);
+router.post('/register', validateRegisterInput, register);
 
-module.exports = router;
+export default router;
