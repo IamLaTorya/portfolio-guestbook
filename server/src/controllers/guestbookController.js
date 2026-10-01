@@ -45,3 +45,18 @@ export const createEntry = async (req, res) => {
         return res.status(400).json({ error: err.message });
     }
 };
+
+// GET /api/guestbook/pending (Admin Only)
+export const getPendingEntries = async (req, res) => {
+    try {
+        // Query MongoDB strictly for unapproved entries, sorted from newest to oldest
+        const pendingEntries = await Guestbook.find({ approved: false })
+            .populate('author', 'username')
+            .sort({ createdAt: -1 });
+
+        // Your working toJSON transform will automatically strip likedBy from these as well!
+        return res.status(200).json(pendingEntries);
+    } catch (err) {
+        return res.status(500).json({ error: 'Failed to retrieve pending entries.' });
+    }
+};
