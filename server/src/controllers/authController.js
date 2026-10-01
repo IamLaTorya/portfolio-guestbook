@@ -52,7 +52,7 @@ export const login = async (req, res) => {
             return res.status(400).json({ error: 'Username and password are required.' });
         }
         // Find the user by username in the database
-        const user = await User.findOne({ username: username.toLowerCase().trim() })
+        const user = await User.findOne({ username: username.toLowerCase().trim() }).select('+password');
         if (!user) {
             return res.status(401).json({ error: 'Invalid username or password.' });
         }
