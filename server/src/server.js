@@ -6,6 +6,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 // 11. Import the authentication routes
 import authRoutes from './routes/auth.js';
+// 13. Import the guestbook routes
+import guestbookRoutes from './routes/guestbook.js';
+
 // 2a. Initialize Express application
 const app = express();
 
@@ -25,6 +28,8 @@ try {
 app.use(express.json());
 // 12. Use the authentication routes
 app.use('/api/auth', authRoutes);
+// 14. Use the guestbook routes
+app.use('/api/guestbook', guestbookRoutes);
 // 5. Create a basic test route
 app.get('/', (req, res) => {
     res.send('The Portfolio Guestbook server is running!');
