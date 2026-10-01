@@ -60,3 +60,28 @@ export const getPendingEntries = async (req, res) => {
         return res.status(500).json({ error: 'Failed to retrieve pending entries.' });
     }
 };
+
+// PATCH /api/guestbook/:id/approve (Admin Only)
+export const approveEntry = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find entry and update approved to true
+        // { new: true } returns the updated document instead of the old one
+        const updatedEntry = await Guestbook.findByIdAndUpdate(
+            id,
+            { approved: true },
+            { new: true }
+        ).populate('author', 'username');
+
+        // If no entry exists with that custom string ID (e.g., GB-9999), return 404
+        if (!updatedEntry) {
+            return res.status(404).json({ error: 'Guestbook entry not found.' });
+        }
+
+        return res.status(200).json(updatedEntry);
+    } catch (err) {
+        return res.status(500).json({ error: 'Failed to approve guestbook entry.' });
+    }
+};
+
