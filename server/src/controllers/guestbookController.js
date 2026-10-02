@@ -19,6 +19,21 @@ export const getApprovedEntries = async (req, res) => {
     }
 };
 
+// GET /api/guestbook/pending (Admin Only)
+export const getPendingEntries = async (req, res) => {
+    try {
+        // Query MongoDB strictly for unapproved entries, sorted from newest to oldest
+        const pendingEntries = await Guestbook.find({ approved: false })
+            .populate('author', 'username')
+            .sort({ createdAt: -1 });
+
+        // Your working toJSON transform will automatically strip likedBy from these as well!
+        return res.status(200).json(pendingEntries);
+    } catch (err) {
+        return res.status(500).json({ error: 'Failed to retrieve pending entries.' });
+    }
+};
+
 // POST /api/guestbook (create a new entry)
 export const createEntry = async (req, res) => {
     try {
@@ -46,20 +61,40 @@ export const createEntry = async (req, res) => {
     }
 };
 
-// GET /api/guestbook/pending (Admin Only)
-export const getPendingEntries = async (req, res) => {
+// POST /api/guestbook/:id/like (Authenticated Users Only)
+export const likeEntry = async (req, res) => {
     try {
-        // Query MongoDB strictly for unapproved entries, sorted from newest to oldest
-        const pendingEntries = await Guestbook.find({ approved: false })
-            .populate('author', 'username')
-            .sort({ createdAt: -1 });
+        const { id } = req.params;
+        const userId = req.user.id;
 
-        // Your working toJSON transform will automatically strip likedBy from these as well!
-        return res.status(200).json(pendingEntries);
+        // Find the guestbook entry
+        const entry = await Guestbook.findById(id).select('+likedBy');
+        if (!entry) {
+            return res.status(404).json({ error: 'Guestbook entry not found.' });
+        }
+
+        //Safely check if the string user ID exists in the ObjectId array
+        const hasLiked = entry.likedBy.some(uid => uid.toString() === userId.toString());
+
+        // Add the user's ID to the likedBy array if not already present
+        if (!hasLiked) {
+            entry.likedBy.push(userId);
+            entry.likes += 1; // Increment the likes count when a user likes the entry
+            await entry.save();
+        } else {
+            //a 400 error response for duplicates
+            return res.status(400).json({ error: 'You have already liked this entry.' });
+        }
+
+        // Return the updated entry with the likedBy field included 
+        return res.status(200).json(entry);
     } catch (err) {
-        return res.status(500).json({ error: 'Failed to retrieve pending entries.' });
+        console.error('Error liking guestbook entry:', err);
+        return res.status(500).json({ error: 'Failed to like guestbook entry.' });
     }
 };
+
+
 
 // PATCH /api/guestbook/:id/approve (Admin Only)
 export const approveEntry = async (req, res) => {
