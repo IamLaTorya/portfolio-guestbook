@@ -1,5 +1,7 @@
 // Controller for handling guestbook-related routes
 import Guestbook from '../models/Guestbook.js';
+import { createEntrySchema } from '../models/GuestbookValidation.js';
+import { z } from 'zod';
 
 // GET /api/guestbook (approved entries only)
 export const getApprovedEntries = async (req, res) => {
@@ -36,15 +38,16 @@ export const getPendingEntries = async (req, res) => {
 
 // POST /api/guestbook (create a new entry)
 export const createEntry = async (req, res) => {
-    try {
-        const { _id, displayName, message } = req.body;
-
+    try {// Validate and create a new guestbook entry
+        const validatedData = createEntrySchema.parse(req.body);
+        
+        const { _id, displayName, message } = validatedData;
         // Create the entry using fields explicitly defined (ignoring fake req.body.approved hacks)
         const newEntry = new Guestbook({
             _id: _id,                    // Populated safely by your generateGuestbookId middleware
             author: req.user.id,         // Populated securely by your requireAuth middleware
-            displayName: displayName,
-            message: message
+            displayName: validatedData.displayName,
+            message: validatedData.message
             // approved, likes, and likedBy fall back to schema defaults automatically
         });
 
@@ -52,6 +55,10 @@ export const createEntry = async (req, res) => {
         return res.status(201).json(savedEntry);
 
     } catch (err) {
+        // Handle Zod validation errors
+        if (err instanceof z.ZodError) {
+            return res.status(400).json({ error: err.message });
+        }
         // Return 409 for duplicate keys (Mongoose error code 11000)
         if (err.code === 11000) {
             return res.status(409).json({ error: 'Conflict: Duplicate ID generated.' });
