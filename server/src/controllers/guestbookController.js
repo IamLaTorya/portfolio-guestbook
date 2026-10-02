@@ -85,3 +85,21 @@ export const approveEntry = async (req, res) => {
     }
 };
 
+// DELETE /api/guestbook/:id (Admin Only)
+export const deleteEntry = async (req, res) => {
+    try {// Delete a guestbook entry by its custom ID
+        const { id } = req.params;
+        // Attempt to find and delete the entry by its custom ID
+        const deletedEntry = await Guestbook.findByIdAndDelete(id);
+        // If no entry was found and deleted, return 404
+        if (!deletedEntry) {
+            return res.status(404).json({ error: 'Guestbook entry not found.' });
+        }
+        // Return 200 with a success message if the entry was successfully deleted
+        return res.status(200).json({ message: 'Guestbook entry deleted successfully.' });
+    } catch (err) {
+        // Log the error for debugging purposes
+        console.error('Error deleting guestbook entry:', err);
+        return res.status(500).json({ error: 'Failed to delete guestbook entry.' });
+    }
+};
