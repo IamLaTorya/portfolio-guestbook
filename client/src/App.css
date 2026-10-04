@@ -522,6 +522,10 @@ form button {
   margin-top: 3rem;
   text-align: left;
 }
+.guestbook-status {
+  text-align: center;
+  color: var(--text);
+}
 
 /* Individual Guestbook Card layout matching your .project-card layout ecosystem */
 .entry-card {

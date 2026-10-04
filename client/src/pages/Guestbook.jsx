@@ -2,23 +2,46 @@ import { useState, useEffect } from "react";
 
 export default function Guestbook() {
     const [entries, setEntries] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [displayName, setDisplayName] = useState("");
     const [message, setMessage] = useState("");
 
     // 1. Fetch entries from your database backend
     async function loadEntries() {
         try {
+            setLoading(true);
+            setError(null);
+
             const res = await fetch("/api/guestbook");
+
+            if (!res.ok) {
+                throw new Error(`Server responded with status: ${res.status}`);
+            }
+
             const data = await res.json();
             setEntries(data);
         } catch (error) {
             console.error("Error loading guestbook data:", error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
     }
 
     useEffect(() => {
         loadEntries();
     }, []);
+
+    //Hook to handle loading and error states
+    useEffect(() => {
+        if (loading) {
+            console.log("Loading guestbook entries...");
+        }
+        if (error) {
+            console.error("Error loading guestbook entries:", error);
+        }
+    }, [loading, error]);
 
     // 2. Submit new entry payload
     async function handleSubmit(e) {
@@ -43,12 +66,17 @@ export default function Guestbook() {
 
     // 3. Process backend schema likes using MongoDB _id
     async function likeEntry(id) {
-        const res = await fetch(`/api/guestbook/${id}/like`, { method: "POST" });
-        if (res.ok) {
-            loadEntries();
+        try {
+            const res = await fetch(`/api/guestbook/${id}/like`, { method: "POST" });
+            if (res.ok) {
+                loadEntries();
+            }
+        } catch (error) {
+            console.error("Error liking entry:", error);
         }
     }
 
+    // This return statement must be INSIDE the Guestbook function
     return (
         <div className="guestbook-page">
             <h1 className="guestbook-header">Guestbook</h1>
@@ -76,7 +104,10 @@ export default function Guestbook() {
 
             {/* Database Feed Module */}
             <div className="entries-list">
-                {entries.map((entry) => (
+                {loading && <p className="guestbook-status">Loading entries...</p>}
+                {error && <p className="form-inactive-notice">Error loading entries: {error}</p>}
+                {!loading && !error && entries.length === 0 && <p className="guestbook-status">No entries found or approved yet. Be the first to leave a message!</p>}
+                {!loading && !error && entries.map((entry) => (
                     <div key={entry._id} className="entry-card">
                         <div className="entry-header">
                             <strong className="entry-author">{entry.displayName}</strong>
@@ -92,8 +123,8 @@ export default function Guestbook() {
                         </div>
                         <p className="entry-message">{entry.message}</p>
                     </div>
-                ))}
+                ))} 
             </div>
         </div>
     );
-}
+} 
