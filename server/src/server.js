@@ -4,6 +4,11 @@ import 'dotenv/config';
 import express from 'express';
 // 8. Import Mongoose for MongoDB connection
 import mongoose from 'mongoose';
+// 15. Import security-related middleware
+import helmet from 'helmet';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
 // 11. Import the authentication routes
 import authRoutes from './routes/auth.js';
 // 13. Import the guestbook routes
@@ -11,6 +16,33 @@ import guestbookRoutes from './routes/guestbook.js';
 
 // 2a. Initialize Express application
 const app = express();
+// 16. Apply security-related middleware
+// 16a. Apply security-related middleware
+app.use(helmet());
+// 16b. Apply CORS middleware
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+    ? process.env.CLIENT_URL 
+    : 'http://localhost:5173',
+    credentials: true
+}));
+
+// 4. Built-in Middleware to parse JSON incoming payloads
+app.use(express.json());
+
+// 16c. Apply MongoDB data sanitization middleware
+app.use(mongoSanitize());
+
+// 16d. Apply rate limiting to the API
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    message: 'Too many requests from this IP, please try again later.'
+});
+//17. Apply rate limiting to the API
+app.use('/api',apiLimiter);
 
 // 3. Define your port (defaulting to 5000 if not specified in .env)
 const PORT = process.env.PORT || 5000;
@@ -24,8 +56,7 @@ try {
     console.error('❌ MongoDB connection failed:', err.message);
     process.exit(1); // Exit the process with an error code
 }
-// 4. Built-in Middleware to parse JSON incoming payloads
-app.use(express.json());
+
 // 12. Use the authentication routes
 app.use('/api/auth', authRoutes);
 // 14. Use the guestbook routes
