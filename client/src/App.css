@@ -617,6 +617,40 @@ form button {
   color: var(--text);
 }
 
+.admin-indicator-banner {
+  font-weight: bold;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.unauthenticated-notice-card {
+  text-align: center;
+  margin-bottom: 3rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.unauthenticated-notice-card .notice-text {
+  margin: 0 0 1rem 0;
+  color: var(--text);
+}
+
+.admin-card-controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-tag-text {
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+
 
 /* Footer — Fluid, accessible, no overflow                 */
 footer {

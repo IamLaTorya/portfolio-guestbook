@@ -41,10 +41,10 @@ export const createEntry = async (req, res) => {
     try {// Validate and create a new guestbook entry
         const validatedData = createEntrySchema.parse(req.body);
         
-        const { _id, displayName, message } = validatedData;
+        const customId = req.body._id;
         // Create the entry using fields explicitly defined (ignoring fake req.body.approved hacks)
         const newEntry = new Guestbook({
-            _id: _id,                    // Populated safely by your generateGuestbookId middleware
+            _id: customId,
             author: req.user.id,         // Populated securely by your requireAuth middleware
             displayName: validatedData.displayName,
             message: validatedData.message

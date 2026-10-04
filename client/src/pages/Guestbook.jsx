@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Guestbook() {
     const [entries, setEntries] = useState([]);
@@ -7,7 +8,21 @@ export default function Guestbook() {
     const [displayName, setDisplayName] = useState("");
     const [message, setMessage] = useState("");
 
-    // 1. Fetch entries from your database backend
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const adminCheck = localStorage.getItem("isAdmin") === "true";
+
+        if (token) {
+            setIsLoggedIn(true);
+            setIsAdmin(adminCheck);
+        }
+    }, []);
+
     async function loadEntries() {
         try {
             setLoading(true);
@@ -33,24 +48,17 @@ export default function Guestbook() {
         loadEntries();
     }, []);
 
-    //Hook to handle loading and error states
-    useEffect(() => {
-        if (loading) {
-            console.log("Loading guestbook entries...");
-        }
-        if (error) {
-            console.error("Error loading guestbook entries:", error);
-        }
-    }, [loading, error]);
-
-    // 2. Submit new entry payload
     async function handleSubmit(e) {
         e.preventDefault();
+        const token = localStorage.getItem("token");
 
         const res = await fetch("/api/guestbook", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ displayName, message })
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ _id: "TEMP_ID", displayName, message })
         });
 
         if (res.ok) {
@@ -64,7 +72,6 @@ export default function Guestbook() {
         }
     }
 
-    // 3. Process backend schema likes using MongoDB _id
     async function likeEntry(id) {
         try {
             const res = await fetch(`/api/guestbook/${id}/like`, { method: "POST" });
@@ -76,37 +83,53 @@ export default function Guestbook() {
         }
     }
 
-    // This return statement must be INSIDE the Guestbook function
     return (
         <div className="guestbook-page">
             <h1 className="guestbook-header">Guestbook</h1>
 
-            {/* Form structure matches your contact page layout variables */}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    id="display-name"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Your Name"
-                    required
-                />
-                <textarea
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Your Message"
-                    rows="4"
-                    required
-                />
-                <button type="submit" className="submit-button">Submit Entry</button>
-            </form>
+            {isAdmin && (
+                <p className="admin-indicator-banner">
+                    Logged in as Administrator
+                </p>
+            )}
 
-            {/* Database Feed Module */}
+            {isLoggedIn ? (
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        id="display-name"
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        placeholder="Your Name"
+                        required
+                    />
+                    <textarea
+                        id="message"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Your Message"
+                        rows="4"
+                        required
+                    />
+                    <button type="submit" className="submit-button">Submit Entry</button>
+                </form>
+            ) : (
+                <div className="unauthenticated-notice-card">
+                    <p className="notice-text">
+                        You must be logged in to leave a message on the guestbook.
+                    </p>
+                    <button type="button" onClick={() => navigate("/login")}>
+                        Go to Login
+                    </button>
+                </div>
+            )}
+
             <div className="entries-list">
                 {loading && <p className="guestbook-status">Loading entries...</p>}
                 {error && <p className="form-inactive-notice">Error loading entries: {error}</p>}
-                {!loading && !error && entries.length === 0 && <p className="guestbook-status">No entries found or approved yet. Be the first to leave a message!</p>}
+                {!loading && !error && entries.length === 0 && (
+                    <p className="guestbook-status">No entries found or approved yet. Be the first to leave a message!</p>
+                )}
                 {!loading && !error && entries.map((entry) => (
                     <div key={entry._id} className="entry-card">
                         <div className="entry-header">
@@ -122,9 +145,15 @@ export default function Guestbook() {
                             </button>
                         </div>
                         <p className="entry-message">{entry.message}</p>
+
+                        {isAdmin && (
+                            <div className="admin-card-controls">
+                                <span className="admin-tag-text">[Admin Control Active]</span>
+                            </div>
+                        )}
                     </div>
-                ))} 
+                ))}
             </div>
         </div>
     );
-} 
+}
