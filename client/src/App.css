@@ -587,6 +587,37 @@ form button {
   font-weight: 600;
 }
 
+/* Login page styles */
+.login-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.login-toggle-button {
+  background: none !important;
+  border: none !important;
+  color: var(--text) !important;
+  cursor: pointer;
+  box-shadow: none !important;
+  transform: none !important;
+  margin: 2rem auto 0 auto;
+  display: block;
+}
+
+.login-toggle-button:hover {
+  background: none !important;
+  color: var(--text) !important;
+  transform: none !important;
+}
+
+.login-status-text {
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--text);
+}
+
+
 /* Footer — Fluid, accessible, no overflow                 */
 footer {
   margin-top: 3rem;

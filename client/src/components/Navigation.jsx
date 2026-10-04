@@ -19,6 +19,7 @@ export default function Navigation({
                 <NavLink to="/experience">Experience</NavLink>
                 <NavLink to="/contact">Contact</NavLink>
                 <NavLink to="/guestbook">Guestbook</NavLink>
+                <NavLink to="/login">Login</NavLink>
                 <button onClick={onToggleMode} className="theme-toggle">{isDarkMode ? "☀️" : "🌙"}</button>
             </div>
         </nav >
