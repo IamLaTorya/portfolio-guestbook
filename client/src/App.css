@@ -513,6 +513,76 @@ form button {
   /* centers the button */
 }
 
+/*Guestbook page*/
+/* Entries Feed Layout */
+.entries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 3rem;
+  text-align: left;
+}
+
+/* Individual Guestbook Card layout matching your .project-card layout ecosystem */
+.entry-card {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.entry-card:hover {
+  transform: translateY(-2px);
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.entry-author {
+  font-size: 1.15rem;
+  color: var(--text-h);
+}
+
+.entry-message {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+/* Like button formatting snippet overrides */
+.like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.4rem 0.85rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: fit-content;
+  margin: 0;
+}
+
+.like-button:hover {
+  background: var(--accent-bg);
+  color: var(--text-h);
+  transform: translateY(-1px);
+}
+
+.like-count {
+  font-weight: 600;
+}
+
 /* Footer — Fluid, accessible, no overflow                 */
 footer {
   margin-top: 3rem;
