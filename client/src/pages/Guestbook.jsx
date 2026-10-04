@@ -73,10 +73,22 @@ export default function Guestbook() {
     }
 
     async function likeEntry(id) {
+        // Grab the token from localStorage for authentication
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You must be logged in to like an entry.");
+            return;
+        }
+
         try {
-            const res = await fetch(`/api/guestbook/${id}/like`, { method: "POST" });
+            const res = await fetch(`/api/guestbook/${id}/like`, { 
+                method: "POST", 
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } });
             if (res.ok) {
                 loadEntries();
+            } else {
+                const err = await res.json();
+                alert(err.error || "Error liking entry.");
             }
         } catch (error) {
             console.error("Error liking entry:", error);
@@ -131,12 +143,12 @@ export default function Guestbook() {
                     <p className="guestbook-status">No entries found or approved yet. Be the first to leave a message!</p>
                 )}
                 {!loading && !error && entries.map((entry) => (
-                    <div key={entry._id} className="entry-card">
+                    <div key={entry.id} className="entry-card">
                         <div className="entry-header">
                             <strong className="entry-author">{entry.displayName}</strong>
                             <button
                                 type="button"
-                                onClick={() => likeEntry(entry._id)}
+                                onClick={() => likeEntry(entry.id)}
                                 className="like-button"
                                 aria-label="Like post entry"
                             >
