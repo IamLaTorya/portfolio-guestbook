@@ -619,7 +619,7 @@ form button {
 
 .admin-indicator-banner {
   font-weight: bold;
-  color: var(--accent);
+  color: #d9534f;
   text-align: center;
   margin-bottom: 1rem;
 }
@@ -648,6 +648,70 @@ form button {
 .admin-tag-text {
   font-size: 0.85rem;
   color: var(--accent);
+}
+/* Admin Section Containers */
+.admin-moderation-section {
+  margin-top: 3rem;
+  border-top: 2px dashed var(--border);
+  padding-top: 2rem;
+}
+
+.admin-section-title,
+.feed-section-title {
+  color: var(--text-h);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+/* Distinct card tag for pending items */
+.admin-pending-card {
+  border-left: 4px solid #f0ad4e; /* Clean warning yellow left border accent */
+}
+
+/* Moderation Controls Layout */
+.admin-card-controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.admin-tag-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f0ad4e;
+}
+
+/* Specific Action Button Overrides */
+.approve-action-btn,
+.delete-action-btn {
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem !important;
+  margin: 0 !important;
+  width: fit-content !important;
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+}
+
+.approve-action-btn {
+  background: #5cb85c !important; /* Muted Success Green */
+  color: #ffffff !important;
+}
+
+.approve-action-btn:hover {
+  background: #4cae4c !important;
+  transform: translateY(-1px);
+}
+
+.delete-action-btn {
+  background: #d9534f !important; /* Muted Danger Red */
+  color: #ffffff !important;
+}
+
+.delete-action-btn:hover {
+  background: #d43f3a !important;
+  transform: translateY(-1px);
 }
 
 

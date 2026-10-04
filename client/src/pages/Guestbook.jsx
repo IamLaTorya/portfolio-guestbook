@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Guestbook() {
     const [entries, setEntries] = useState([]);
+    const [pendingEntries, setPendingEntries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [displayName, setDisplayName] = useState("");
@@ -44,9 +45,30 @@ export default function Guestbook() {
         }
     }
 
+    async function loadPendingEntries() {
+        const token = localStorage.getItem("token");
+        try {
+            const res = await fetch("/api/guestbook/pending", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (!res.ok) {
+                throw new Error(`Server responded with status: ${res.status}`);
+            }
+
+            const data = await res.json();
+            setPendingEntries(data);
+        } catch (error) {
+            console.error("Error loading pending guestbook entries:", error);
+        }
+    }
+
     useEffect(() => {
         loadEntries();
-    }, []);
+        if (isAdmin) {
+            loadPendingEntries();
+        }
+    }, [isAdmin]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -58,7 +80,7 @@ export default function Guestbook() {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({ _id: "TEMP_ID", displayName, message })
+            body: JSON.stringify({ displayName, message })
         });
 
         if (res.ok) {
@@ -66,6 +88,7 @@ export default function Guestbook() {
             setDisplayName("");
             setMessage("");
             loadEntries();
+            if (isAdmin) loadPendingEntries();
         } else {
             const err = await res.json();
             alert(err.error || "Error processing entry submission.");
@@ -81,9 +104,10 @@ export default function Guestbook() {
         }
 
         try {
-            const res = await fetch(`/api/guestbook/${id}/like`, { 
-                method: "POST", 
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } });
+            const res = await fetch(`/api/guestbook/${id}/like`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+            });
             if (res.ok) {
                 loadEntries();
             } else {
@@ -94,8 +118,58 @@ export default function Guestbook() {
             console.error("Error liking entry:", error);
         }
     }
+    async function approveEntry(id) {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You must be logged in to approve an entry.");
+            return;
+        }
 
-    return (
+        try {
+            const res = await fetch(`/api/guestbook/${id}/approve`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                alert("Entry approved successfully!");
+                loadEntries();
+                loadPendingEntries();
+            } else {
+                const err = await res.json();
+                alert(err.error || "Error approving entry.");
+            }
+        } catch (error) {
+            console.error("Error approving entry:", error);
+        }
+    }
+    async function deleteEntry(id) {
+        if (!window.confirm("Are you sure you want to delete this entry?")) {
+            return;
+        }
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You must be logged in to delete an entry.");
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/guestbook/${id}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                alert("Entry deleted successfully!");
+                loadEntries();
+                loadPendingEntries();
+            } else {
+                const err = await res.json();
+                alert(err.error || "Error deleting entry.");
+            }
+        } catch (error) {
+            console.error("Error deleting entry:", error);
+        }
+    }
+        return (
         <div className="guestbook-page">
             <h1 className="guestbook-header">Guestbook</h1>
 
@@ -130,12 +204,44 @@ export default function Guestbook() {
                     <p className="notice-text">
                         You must be logged in to leave a message on the guestbook.
                     </p>
-                    <button type="button" onClick={() => navigate("/login")}>
+                    <button type="button" onClick={() => navigate("/login")} className="submit-button">
                         Go to Login
                     </button>
                 </div>
             )}
 
+            {/* Admin Moderation Panel — Cleanly Separated */}
+            {isAdmin && (
+                <div className="admin-moderation-section">
+                    <h2 className="admin-section-title">Pending Moderation Queue</h2>
+                    {pendingEntries.length === 0 ? (
+                        <p className="guestbook-status">No entries awaiting verification.</p>
+                    ) : (
+                        <div className="entries-list">
+                            {pendingEntries.map((entry) => (
+                                <div key={entry.id} className="entry-card admin-pending-card">
+                                    <div className="entry-header">
+                                        <strong className="entry-author">{entry.displayName}</strong>
+                                        <span className="admin-tag-text">Pending Approval</span>
+                                    </div>
+                                    <p className="entry-message">{entry.message}</p>
+                                    <div className="admin-card-controls">
+                                        <button type="button" onClick={() => approveEntry(entry.id)} className="approve-action-btn">
+                                            Approve
+                                        </button>
+                                        <button type="button" onClick={() => deleteEntry(entry.id)} className="delete-action-btn">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Main Public Entries Feed — Visible to Everyone */}
+            <h2 className="feed-section-title" style={{ marginTop: "3rem" }}>Messages</h2>
             <div className="entries-list">
                 {loading && <p className="guestbook-status">Loading entries...</p>}
                 {error && <p className="form-inactive-notice">Error loading entries: {error}</p>}
@@ -160,7 +266,9 @@ export default function Guestbook() {
 
                         {isAdmin && (
                             <div className="admin-card-controls">
-                                <span className="admin-tag-text">[Admin Control Active]</span>
+                                <button type="button" onClick={() => deleteEntry(entry.id)} className="delete-action-btn">
+                                    Remove Public Post
+                                </button>
                             </div>
                         )}
                     </div>
