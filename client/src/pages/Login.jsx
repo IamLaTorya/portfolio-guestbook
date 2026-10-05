@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"
+
 export default function Login() {
     const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState("");
@@ -24,7 +26,7 @@ export default function Login() {
         setLoading(true);
         setError(null);
 
-        const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
+        const endpoint = isLogin ? `${API_URL}/api/auth/login` : `${API_URL}/api/auth/register`;
 
         try {
             const res = await fetch(endpoint, {
