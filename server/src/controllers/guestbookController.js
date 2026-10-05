@@ -8,7 +8,7 @@ export const getApprovedEntries = async (req, res) => {
     try {
         // Query MongoDB strictly for approved entries, sorted from newest to oldest
         const entries = await Guestbook.find({ approved: true })
-            .populate('author', 'username')
+            .populate({ path: 'author', select: 'username' })
             .sort({ createdAt: -1 });
 
         // When res.json is called, your schema's toJSON transform automatically:
@@ -17,6 +17,7 @@ export const getApprovedEntries = async (req, res) => {
         return res.status(200).json(entries);
 
     } catch (err) {
+        console.error('Error retrieving guestbook entries:', err);
         return res.status(500).json({ error: 'Failed to retrieve guestbook entries.' });
     }
 };

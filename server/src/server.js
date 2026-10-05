@@ -9,6 +9,8 @@ import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
+import './models/User.js';
+import './models/Guestbook.js';
 // 11. Import the authentication routes
 import authRoutes from './routes/auth.js';
 // 13. Import the guestbook routes
@@ -29,6 +31,15 @@ app.use(cors({
 
 // 4. Built-in Middleware to parse JSON incoming payloads
 app.use(express.json());
+// 16e. Custom middleware to make the query object writable
+app.use((req, res, next) => {
+    Object.defineProperty(req, 'query', {
+        ...Object.getOwnPropertyDescriptor(req, 'query'),
+        value: req.query,
+        writable: true,
+    });
+    next();
+});
 
 // 16c. Apply MongoDB data sanitization middleware
 app.use(mongoSanitize());
@@ -39,10 +50,11 @@ const apiLimiter = rateLimit({
     max: 100, // limit each IP to 100 requests per windowMs
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    message: 'Too many requests from this IP, please try again later.'
+    // FIX: Must wrap message in a structured JSON object to prevent frontend parsing crashes
+    message: { error: 'Too many requests from this IP, please try again later.' }
 });
 //17. Apply rate limiting to the API
-app.use('/api',apiLimiter);
+app.use('/api', apiLimiter);
 
 // 3. Define your port (defaulting to 5000 if not specified in .env)
 const PORT = process.env.PORT || 5000;
@@ -61,16 +73,18 @@ try {
 app.use('/api/auth', authRoutes);
 // 14. Use the guestbook routes
 app.use('/api/guestbook', guestbookRoutes);
+
 // 5. Create a basic test route
 app.get('/', (req, res) => {
     res.send('The Portfolio Guestbook server is running!');
 });
-// 6. Create a health check route
-app.get('/health', (req, res) => {
+
+// 6. FIX: Standardize route path to match your strict roadmap checklist expectations
+app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
 // 7. Start the server and listen for requests
 app.listen(PORT, () => {
-    console.log(`🚀 Server is listening perfectly on port ${PORT}`);
+    console.log('🚀 Server is listening perfectly on port ' + PORT);
 });

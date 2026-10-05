@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const guestbookSchema = new mongoose.Schema({
     //custom id for the entry document
-    _id: { type: String, required: true },
+    _id: { type: String, required: true, cast: false },
     //reference to the user who authored the entry
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     //display name of the entry author
