@@ -48,7 +48,7 @@ export default function Guestbook() {
     async function loadPendingEntries() {
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch("/api/guestbook/pending", {
+            const res = await fetch(`${API_URL}/api/guestbook/pending`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
 
@@ -74,7 +74,7 @@ export default function Guestbook() {
         e.preventDefault();
         const token = localStorage.getItem("token");
 
-        const res = await fetch("/api/guestbook", {
+        const res = await fetch(`${API_URL}/api/guestbook`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export default function Guestbook() {
         }
 
         try {
-            const res = await fetch(`/api/guestbook/${id}/like`, {
+            const res = await fetch(`${API_URL}/api/guestbook/${id}/like`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
             });
@@ -126,7 +126,7 @@ export default function Guestbook() {
         }
 
         try {
-            const res = await fetch(`/api/guestbook/${id}/approve`, {
+            const res = await fetch(`${API_URL}/api/guestbook/${id}/approve`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
             });
