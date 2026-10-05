@@ -15,6 +15,8 @@ import './models/Guestbook.js';
 import authRoutes from './routes/auth.js';
 // 13. Import the guestbook routes
 import guestbookRoutes from './routes/guestbook.js';
+// 18. Import the centralized error handler middleware
+import { errorHandler } from './middleware/errorHandler.js';
 
 // 2a. Initialize Express application
 const app = express();
@@ -83,6 +85,8 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
 });
+// 19. Apply the centralized error handler middleware
+app.use(errorHandler);
 
 // 7. Start the server and listen for requests
 app.listen(PORT, () => {

@@ -1,8 +1,6 @@
 // Controller for handling guestbook-related routes
 import Guestbook from '../models/Guestbook.js';
 import { createEntrySchema } from '../models/GuestbookValidation.js';
-import { z } from 'zod';
-
 // GET /api/guestbook (approved entries only)
 export const getApprovedEntries = async (req, res) => {
     try {
@@ -38,7 +36,7 @@ export const getPendingEntries = async (req, res) => {
 };
 
 // POST /api/guestbook (create a new entry)
-export const createEntry = async (req, res) => {
+export const createEntry = async (req, res, next) => {
     try {// Validate and create a new guestbook entry
         const validatedData = createEntrySchema.parse(req.body);
         
@@ -57,15 +55,7 @@ export const createEntry = async (req, res) => {
 
     } catch (err) {
         // Handle Zod validation errors
-        if (err instanceof z.ZodError) {
-            return res.status(400).json({ error: err.message });
-        }
-        // Return 409 for duplicate keys (Mongoose error code 11000)
-        if (err.code === 11000) {
-            return res.status(409).json({ error: 'Conflict: Duplicate ID generated.' });
-        }
-        // Return 400 for structural schema validation failures
-        return res.status(400).json({ error: err.message });
+        next(err);
     }
 };
 
