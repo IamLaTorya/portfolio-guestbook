@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function Guestbook() {
     const [entries, setEntries] = useState([]);
     const [pendingEntries, setPendingEntries] = useState([]);
@@ -29,7 +31,7 @@ export default function Guestbook() {
             setLoading(true);
             setError(null);
 
-            const res = await fetch("http://localhost:5000/api/guestbook");
+            const res = await fetch(`${API_URL}/api/guestbook`);
 
             if (!res.ok) {
                 throw new Error(`Server responded with status: ${res.status}`);
