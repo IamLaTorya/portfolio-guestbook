@@ -547,6 +547,18 @@ form button {
   align-items: center;
   margin-bottom: 0.75rem;
 }
+.entry-id-badge {
+    background-color: #e2e8f0; /* Muted gray background */
+    color: #4a5568;            /* Dark slate gray text */
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: monospace;    /* Keeps tracking numbers perfectly aligned */
+    font-weight: bold;
+    margin-right: 10px;        /* Spacing before the author's name */
+    display: inline-block;
+    border: 1px solid #cbd5e1;
+}
 
 .entry-author {
   font-size: 1.15rem;

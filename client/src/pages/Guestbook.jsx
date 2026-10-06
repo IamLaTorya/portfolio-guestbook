@@ -223,6 +223,7 @@ export default function Guestbook() {
                             {pendingEntries.map((entry) => (
                                 <div key={entry.id} className="entry-card admin-pending-card">
                                     <div className="entry-header">
+                                    <span className = "entry-id-badge">{entry.id}</span>
                                         <strong className="entry-author">{entry.displayName}</strong>
                                         <span className="admin-tag-text">Pending Approval</span>
                                     </div>
@@ -253,6 +254,7 @@ export default function Guestbook() {
                 {!loading && !error && entries.map((entry) => (
                     <div key={entry.id} className="entry-card">
                         <div className="entry-header">
+                            <span className="entry-id-badge">{entry.id}</span>
                             <strong className="entry-author">{entry.displayName}</strong>
                             <button
                                 type="button"
