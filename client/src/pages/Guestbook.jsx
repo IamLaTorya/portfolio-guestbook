@@ -155,7 +155,7 @@ export default function Guestbook() {
         }
 
         try {
-            const res = await fetch(`/api/guestbook/${id}`, {
+            const res = await fetch(`${API_URL}/api/guestbook/${id}`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
             });
@@ -268,7 +268,7 @@ export default function Guestbook() {
 
                         {isAdmin && (
                             <div className="admin-card-controls">
-                                <button type="button" onClick={() => deleteEntry(entry.id)} className="delete-action-btn">
+                                <button type="button" onClick={() => deleteEntry(entry._id || entry.id)} className="delete-action-btn">
                                     Remove Public Post
                                 </button>
                             </div>
