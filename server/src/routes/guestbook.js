@@ -6,6 +6,7 @@ import { getApprovedEntries, createEntry, getPendingEntries, approveEntry, likeE
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { generateGuestbookId } from '../middleware/generateId.js';
+import { validateGuestbookInput } from '../validation/guestbookValidation.js';
 
 // GET /api/guestbook - Public access, anyone can call this
 router.get('/', getApprovedEntries);
@@ -14,7 +15,7 @@ router.get('/', getApprovedEntries);
 router.get('/pending', requireAuth, requireRole('admin'), getPendingEntries);
 
 // POST /api/guestbook - Requires authentication and generates a custom ID
-router.post('/', requireAuth, generateGuestbookId, createEntry);
+router.post('/', requireAuth, validateGuestbookInput, generateGuestbookId, createEntry);
 
 // POST /api/guestbook/:id/like - Authenticated Users Only
 router.post('/:id/like', requireAuth, likeEntry);

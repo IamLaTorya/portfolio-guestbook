@@ -1,17 +1,30 @@
 // validation/auth.js
+import { z } from 'zod';
+
+// Define the schema using Zod
+const registerSchema = z.object({
+    // Define the registration schema with username and password fields
+    username: z
+        .string({ required_error: 'Username is required.' })
+        .trim()
+        .min(3, 'Username must be at least 3 characters.')
+        .max(30, 'Username must be 30 characters or less.'),
+    password: z
+        .string({ required_error: 'Password is required.' })
+        .min(6, 'Password must be at least 6 characters long.')
+});
+
 export const validateRegisterInput = (req, res, next) => {
-    // Validate the registration input
-    const { username, password } = req.body;
-    // Validate username and password input
-    if (!username || typeof username !== 'string' || username.trim().length < 3 || username.trim().length > 30) {
-        // If the username is invalid, return an error response immediately
-        return res.status(400).json({ error: 'Username must be between 3 and 30 characters.' });
+    // Parse the incoming body against the Zod schema
+    const result = registerSchema.safeParse(req.body);
+
+    // If validation fails, intercept the request and return a 400 error
+    if (!result.success) {
+        // Grabs the very first validation error message from Zod
+        const errorMessage = result.error.errors[0].message;
+        return res.status(400).json({ error: errorMessage });
     }
-    // Validate password input
-    if (!password || typeof password !== 'string' || password.length < 6) {
-        // If the password is invalid, return an error response immediately
-        return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
-    }
-    // If both username and password are valid, proceed to the next middleware
+
+    // Validation passed! Proceed to your controller logic safely
     next();
 };

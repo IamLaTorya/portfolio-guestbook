@@ -14,3 +14,18 @@ export const createEntrySchema = z.object({
         .min(1, 'Message cannot be empty.')
         .max(500, 'Message must be 500 characters or less.'),
 });
+
+export const validateCreateEntryInput = (req, res, next) => {
+    // Parse the incoming body against the Zod schema
+    const result = createEntrySchema.safeParse(req.body);
+
+    // If validation fails, intercept the request and return a 400 error
+    if (!result.success) {
+        // Grabs the very first validation error message from Zod
+        const errorMessage = result.error.errors[0].message;
+        return res.status(400).json({ error: errorMessage });
+    }
+
+    // Validation passed! Proceed to your controller logic safely
+    next();
+};
