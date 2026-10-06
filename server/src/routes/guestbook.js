@@ -7,7 +7,6 @@ import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { generateGuestbookId } from '../middleware/generateId.js';
 import { validateGuestbookInput } from '../validation/guestbookValidation.js';
-
 // GET /api/guestbook - Public access, anyone can call this
 router.get('/', getApprovedEntries);
 

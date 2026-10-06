@@ -1,6 +1,6 @@
 // Controller for handling guestbook-related routes
 import Guestbook from '../models/Guestbook.js';
-import { createEntrySchema } from '../models/GuestbookValidation.js';
+import { createEntrySchema } from '../validation/guestbookValidation.js';
 // GET /api/guestbook (approved entries only)
 export const getApprovedEntries = async (req, res) => {
     try {
