@@ -9,7 +9,8 @@
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "seed": "node src/scripts/seed.js",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "race": "node src/scripts/race.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
