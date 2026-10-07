@@ -81,7 +81,7 @@ export const likeEntry = async (req, res) => {
             await entry.save();
         } else {
             //a 400 error response for duplicates
-            return res.status(400).json({ error: 'You have already liked this entry.' });
+            return res.status(409).json({ error: 'You have already liked this entry.' });
         }
 
         // Return the updated entry with the likedBy field included 
