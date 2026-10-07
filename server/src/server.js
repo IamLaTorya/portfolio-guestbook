@@ -17,7 +17,8 @@ import authRoutes from './routes/auth.js';
 import guestbookRoutes from './routes/guestbook.js';
 // 18. Import the centralized error handler middleware
 import { errorHandler } from './middleware/errorHandler.js';
-
+// 19. Enable Mongoose's sanitizeFilter option for security
+mongoose.set('sanitizeFilter', true);
 // 2a. Initialize Express application
 const app = express();
 // 16. Apply security-related middleware
@@ -57,6 +58,18 @@ const apiLimiter = rateLimit({
 });
 //17. Apply rate limiting to the API
 app.use('/api', apiLimiter);
+
+// 20. Enable Mongoose's sanitizeFilter option for security
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // limit each IP to 5 login requests per windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many login attempts. Please try again after 15 minutes.' }
+});
+
+// 21. Apply the login rate limiter to the authentication routes
+app.use('/api/auth/login', loginLimiter);
 
 // 3. Define your port (defaulting to 5000 if not specified in .env)
 const PORT = process.env.PORT || 5000;
