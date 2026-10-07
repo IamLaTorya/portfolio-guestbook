@@ -39,7 +39,7 @@ const sampleEntries = [
     {
         displayName: 'Lucy',
         message: 'I enjoyed checking out your projects.',
-        approved: false,
+        approved: true,
         likes: 0,
         likedBy: []
     },
