@@ -69,7 +69,7 @@ const loginLimiter = rateLimit({
 });
 
 // 21. Apply the login rate limiter to the authentication routes
-// app.use('/api/auth/login', loginLimiter);
+app.use('/api/auth/login', loginLimiter);
 
 // 3. Define your port (defaulting to 5000 if not specified in .env)
 const PORT = process.env.PORT || 5000;

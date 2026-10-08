@@ -13,7 +13,7 @@ A full-stack portfolio application with a MongoDB-powered guestbook. Visitors ca
 
 ## 🎥 Project Demo
 
-[Watch the Full-Stack Portfolio Guestbook Demo](PROJECT-VIDEO-LINK)
+[Watch the Full-Stack Portfolio Guestbook Demo](https://www.loom.com/share/23296ed80c654bc59986e20dd459142e)
 
 ---
 
