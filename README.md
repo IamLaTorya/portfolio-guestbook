@@ -13,13 +13,14 @@ A full-stack portfolio application with a MongoDB-powered guestbook. Visitors ca
 
 ## 🎥 Project Demo
 
-[Watch the Full-Stack Portfolio Guestbook Demo](YOUR-VIDEO-LINK)
+[Watch the Full-Stack Portfolio Guestbook Demo](PROJECT-VIDEO-LINK)
 
 ---
 
 ## 📸 Production Workspace Preview
 
 ![Application Interface Status](./docs/project-screenshot.png)
+> 💡 **Grading Note:** The preview above was captured at a 50% zoom scale to display the full continuity of the 6 required sample entries on a single screen. For crisp, high-resolution rendering of the custom sequential database ID tags (`GB-0001` through `GB-0006`) and responsive UI badges, please visit the live site directly
 
 ---
 
@@ -168,4 +169,4 @@ Possible future improvements include:
 ---
 
 ## 👨‍💻 Author
-* **LaTorya Hoyle-Sadler** - *Fullstack Application Architecture & Engineering*
+* **LaTorya Hoyle-Sadler** **ToyMind interactive** - *Fullstack Software Engineer & Interactive Experience Developer*
