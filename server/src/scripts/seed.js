@@ -71,8 +71,8 @@ async function seed() {
         console.log('🗑️ Cleared existing data from MongoDB');
 
         // Reset Guestbook ID tracking counter
-        await Counter.create({ _id: 'guestbook_id', seq: 1 });
-        console.log('🔢 Reset ID tracking counter for guestbook');
+        await Counter.create({ _id: 'guestbook_id', seq: 6 });
+        console.log('🔢 Reset ID tracking counter for guestbook to 6');
 
         // Check for the Admin user credentials
         if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
